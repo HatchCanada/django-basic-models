@@ -15,9 +15,8 @@ from .managers import ActiveObjectsManager
 AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
-class NameSlug(NaturalKey, models.Model):
+class NameSlugBase(NaturalKey, models.Model):
     name = models.CharField(max_length=255)
-    slug = AutoSlugField(unique=True, populate_from='name')
 
     def __unicode__(self):
         return self.name
@@ -30,7 +29,14 @@ class NameSlug(NaturalKey, models.Model):
         self.publish_by('slug')
 
 
-NameSlug.natural_key_fields = ('slug',)
+NameSlugBase.natural_key_fields = ('slug',)
+
+
+class NameSlug(NameSlugBase):
+    slug = AutoSlugField(unique=True, populate_from='name')
+
+    class Meta:
+        abstract = True
 
 
 class CreatedUpdatedBy(models.Model):
@@ -83,5 +89,10 @@ class OnlyOneActive(models.Model):
             self.__class__.objects.filter(is_active=True).exclude(pk=self.pk) \
                 .update(is_active=False)
 
+    class Meta:
+        abstract = True
+
+
+class DefaultModel(CreatedUpdatedBy, CreatedUpdatedAt, IsActive):
     class Meta:
         abstract = True
