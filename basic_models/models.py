@@ -1,7 +1,7 @@
+from autoslug import AutoSlugField
+from cachemodel import CacheModel
 from django.conf import settings
 from django.db import models
-
-from autoslug import AutoSlugField
 
 try:
     from natural_key.mixins import NaturalKey
@@ -15,7 +15,7 @@ from .managers import ActiveObjectsManager
 AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
-class NameSlugBase(NaturalKey, models.Model):
+class NameSlugBase(NaturalKey, CacheModel):
     name = models.CharField(max_length=255)
 
     def __unicode__(self):
@@ -25,7 +25,7 @@ class NameSlugBase(NaturalKey, models.Model):
         abstract = True
 
     def publish(self):
-        super(NameSlug, self).publish()
+        super(NameSlugBase, self).publish()
         self.publish_by('slug')
 
 
