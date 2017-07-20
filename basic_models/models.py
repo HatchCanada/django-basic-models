@@ -50,7 +50,7 @@ class DefaultModel(CreatedUpdatedBy, CreatedUpdatedAt, IsActive):
         abstract = True
 
 
-class NameSlugBase(NaturalKey, DefaultModel, CacheModel):
+class NameSlugBase(NaturalKey, CacheModel):
     name = models.CharField(max_length=255)
 
     def __unicode__(self):
@@ -70,6 +70,11 @@ NameSlugBase.natural_key_fields = ('slug',)
 class NameSlug(NameSlugBase):
     slug = AutoSlugField(unique=True, populate_from='name')
 
+    class Meta:
+        abstract = True
+
+
+class AuditedNameSlug(NameSlugBase, DefaultModel):
     class Meta:
         abstract = True
 
