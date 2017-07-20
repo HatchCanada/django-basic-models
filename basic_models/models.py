@@ -74,7 +74,7 @@ class NameSlug(NameSlugBase):
         abstract = True
 
 
-class AuditedNameSlug(NameSlugBase, DefaultModel):
+class AuditedNameSlug(NameSlug, DefaultModel):
     class Meta:
         abstract = True
 
