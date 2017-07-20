@@ -51,7 +51,7 @@ class DefaultModel(CreatedUpdatedBy, CreatedUpdatedAt, IsActive):
 
 
 class NameSlugBase(NaturalKey, CacheModel):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=1024)
 
     def __unicode__(self):
         return self.name
