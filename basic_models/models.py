@@ -15,7 +15,42 @@ from .managers import ActiveObjectsManager
 AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
-class NameSlugBase(NaturalKey, CacheModel):
+class CreatedUpdatedBy(models.Model):
+    created_by = models.ForeignKey(AUTH_USER_MODEL, null=True, blank=True,
+                                   related_name='+',
+                                   on_delete=models.SET_NULL)
+    updated_by = models.ForeignKey(AUTH_USER_MODEL, null=True, blank=True,
+                                   related_name='+',
+                                   on_delete=models.SET_NULL)
+
+    class Meta:
+        abstract = True
+
+
+class CreatedUpdatedAt(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class IsActive(models.Model):
+    is_active = models.BooleanField(default=True, db_index=True)
+
+    objects = models.Manager()
+    active_objects = ActiveObjectsManager()
+
+    class Meta:
+        abstract = True
+
+
+class DefaultModel(CreatedUpdatedBy, CreatedUpdatedAt, IsActive):
+    class Meta:
+        abstract = True
+
+
+class NameSlugBase(NaturalKey, DefaultModel, CacheModel):
     name = models.CharField(max_length=255)
 
     def __unicode__(self):
@@ -39,42 +74,12 @@ class NameSlug(NameSlugBase):
         abstract = True
 
 
-class CreatedUpdatedBy(models.Model):
-    created_by = models.ForeignKey(AUTH_USER_MODEL, null=True, blank=True,
-                                   related_name='+',
-                                   on_delete=models.SET_NULL)
-    updated_by = models.ForeignKey(AUTH_USER_MODEL, null=True, blank=True,
-                                   related_name='+',
-                                   on_delete=models.SET_NULL)
-
-    class Meta:
-        abstract = True
-
-
-class CreatedUpdatedAt(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
-
-
 class TitleBody(models.Model):
     title = models.CharField(max_length=255)
     body = models.TextField()
 
     def __unicode__(self):
         return self.title
-
-    class Meta:
-        abstract = True
-
-
-class IsActive(models.Model):
-    is_active = models.BooleanField(default=True)
-
-    objects = models.Manager()
-    active_objects = ActiveObjectsManager()
 
     class Meta:
         abstract = True
@@ -89,10 +94,5 @@ class OnlyOneActive(models.Model):
             self.__class__.objects.filter(is_active=True).exclude(pk=self.pk) \
                 .update(is_active=False)
 
-    class Meta:
-        abstract = True
-
-
-class DefaultModel(CreatedUpdatedBy, CreatedUpdatedAt, IsActive):
     class Meta:
         abstract = True
