@@ -68,7 +68,7 @@ NameSlugBase.natural_key_fields = ('slug',)
 
 
 class NameSlug(NameSlugBase):
-    slug = AutoSlugField(unique=True, populate_from='name')
+    slug = AutoSlugField(unique=True, populate_from='name', editable=True)
 
     class Meta:
         abstract = True
