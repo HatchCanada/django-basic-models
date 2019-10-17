@@ -1,4 +1,3 @@
-![Concentric Sky](http://concentricsky.com/media/uploads/images/csky_logo.jpg)
 
 # Django Basic Models
 
@@ -14,8 +13,8 @@ Django Basic Models is an open-source Django library developed by [Concentric Sk
 
 ## Installation
 
-    pip install git+https://github.com/concentricsky/django-basic-models.git
-
+    pip install git+https://github.com/HatchCoding/django-basic-models.git
+    Updated for compatibility with Python 3
 
 ## Getting Started
 

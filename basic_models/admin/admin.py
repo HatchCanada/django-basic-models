@@ -34,7 +34,7 @@ class AutoGroupMeta(ModelAdmin):
         readonly_fields = ['created_by', 'updated_by',
                            'created_at', 'updated_at']
 
-        return filter(lambda field: hasattr(obj, field), readonly_fields)
+        return [field for field in readonly_fields if hasattr(obj, field)]
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = super(AutoGroupMeta, self).get_fieldsets(request, obj)
@@ -45,16 +45,12 @@ class AutoGroupMeta(ModelAdmin):
         # Remove Meta fields from any defined fieldsets
         for fieldset in fieldsets:
             key, field_options = fieldset
-            field_options['fields'] = filter(
-                lambda field_name: field_name not in meta_fields,
-                field_options['fields'])
+            field_options['fields'] = [field_name for field_name in field_options['fields'] if field_name not in meta_fields]
             meta_grouped.append((key, field_options))
 
         # Add meta fields (if they exist on the instance) to a Meta fieldset
         exclude = self.exclude or []
-        fields = filter(
-            lambda field: hasattr(obj, field) and field not in exclude,
-            meta_fields)
+        fields = [field for field in meta_fields if hasattr(obj, field) and field not in exclude]
 
         if fields:
             meta_grouped.append(
