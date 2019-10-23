@@ -53,7 +53,7 @@ class DefaultModel(CreatedUpdatedBy, CreatedUpdatedAt, IsActive):
 class NameSlugBase(NaturalKey, CacheModel):
     name = models.CharField(max_length=1024)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -83,7 +83,7 @@ class TitleBody(models.Model):
     title = models.CharField(max_length=255)
     body = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:
